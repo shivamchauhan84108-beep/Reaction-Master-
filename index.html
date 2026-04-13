@@ -1,0 +1,95 @@
+<!DOCTYPE html><html>
+<head>
+<meta charset="UTF-8">
+<title>Shivam Reaction Master</title>
+<style>
+body{margin:0;background:#000;color:#0ff;font-family:sans-serif;overflow:hidden}
+.screen{display:none;height:100vh;width:100vw;justify-content:center;align-items:center;flex-direction:column}
+.active{display:flex}
+h1{text-align:center}/* CENTER BUTTON FIX */ .center-buttons{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%} .center-buttons button{width:70%;max-width:300px;height:50px;margin:10px;border:none;border-radius:12px;font-size:16px;background:#0ff;color:#000;box-shadow:0 0 10px #0ff;cursor:pointer}
+
+/* GAME AREA FIX */ #gameArea{width:85%;max-width:350px;height:300px;border-radius:20px;display:flex;justify-content:center;align-items:center;background:red;box-shadow:0 0 30px red;transition:.3s;margin:auto}
+
+/* MENU FIX */ .menu{position:absolute;top:15px;left:15px;font-size:26px;cursor:pointer} .dropdown{display:none;position:absolute;top:55px;left:15px;background:#111;padding:10px;border-radius:10px;width:160px} .dropdown button{width:100%;height:40px;margin:5px 0;border:none;border-radius:8px;background:#0ff;color:#000}
+
+.stat{text-align:center;margin-top:10px} </style>
+
+</head>
+<body><!-- HOME --><div id="home" class="screen active">
+<h1>🔥 Shivam Reaction Master 🔥</h1>
+<div class="center-buttons">
+<button onclick="startGame()">🎮 Start Game</button>
+<button onclick="exitGame()">❌ Exit</button>
+</div>
+</div><!-- GAME --><div id="game" class="screen">
+<div class="menu" onclick="toggleMenu()">⋮</div>
+<div class="dropdown" id="menuBox">
+<button onclick="toggleSound()">🔊 Sound</button>
+<button onclick="pauseGame()">⏸ Pause</button>
+<button onclick="resumeGame()">▶ Resume</button>
+<button onclick="goHome()">🏠 Home</button>
+<button onclick="exitGame()">❌ Exit</button>
+</div><div id="gameArea" onclick="tap()">
+<h2 id="text">Wait...</h2>
+</div><div class="stat" id="result"></div>
+<div class="stat">🏆 Rank: <span id="rank">Noob</span></div>
+</div><script>
+let startTime,timeout,ready=false,paused=false,sound=true;
+
+function startGame(){
+ document.getElementById("home").classList.remove("active");
+ document.getElementById("game").classList.add("active");
+ runRound();
+}
+
+function goHome(){
+ document.getElementById("game").classList.remove("active");
+ document.getElementById("home").classList.add("active");
+}
+
+function exitGame(){ alert("Game Closed") }
+
+function runRound(){
+ let game=document.getElementById("gameArea");
+ let text=document.getElementById("text");
+ ready=false;
+ game.style.background="red";
+ text.innerText="Wait...";
+ timeout=setTimeout(()=>{
+  if(paused) return;
+  game.style.background="green";
+  text.innerText="TAP NOW!";
+  startTime=Date.now();
+  ready=true;
+ },Math.random()*3000+2000);
+}
+
+function tap(){
+ if(paused) return;
+ let text=document.getElementById("text");
+ let result=document.getElementById("result");
+ if(!ready){ text.innerText="Too Early ❌"; return }
+ let reaction=Date.now()-startTime;
+ text.innerText="⏱ "+reaction+" ms";
+
+ let rank="Noob";
+ if(reaction<200) rank="Legend 😎";
+ else if(reaction<300) rank="Pro 🔥";
+ else if(reaction<400) rank="Average 🙂";
+ document.getElementById("rank").innerText=rank;
+
+ result.innerText="Good!";
+ ready=false;
+ setTimeout(runRound,1500);
+}
+
+function toggleMenu(){
+ let box=document.getElementById("menuBox");
+ box.style.display=box.style.display==="block"?"none":"block";
+}
+
+function pauseGame(){ paused=true }
+function resumeGame(){ paused=false; runRound() }
+function toggleSound(){ sound=!sound }
+</script></body>
+</html>
